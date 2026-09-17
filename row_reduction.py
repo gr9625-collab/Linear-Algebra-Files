@@ -18,11 +18,8 @@ def row_echelon(B, eps=1e-10):
             continue
 
         # Otherwise we can find a nonzero entry in the current column
-        nonzero_row = None
-        for i in range(pivot_row, m):
-            if abs(A[i, j]) >= eps:
-                nonzero_row = i
-                break
+        # Choose the entry at or below the pivot row with the largest magnitude
+        nonzero_row = pivot_row + np.argmax(np.abs(A[pivot_row:, j]))
 
         # Then swap this row and the pivot row (if they are not already equal)
         if pivot_row != nonzero_row:
@@ -43,6 +40,8 @@ def row_echelon(B, eps=1e-10):
         if pivot_row == m:
             break
 
+    # Set all small values to zero
+    A[np.abs(A) < eps] = 0
     return A
 
 
@@ -76,4 +75,6 @@ def reduced_row_echelon(B, eps=1e-10):
             factor = A[j, pivot]
             A[j, :] -= factor * A[i, :]
 
+    # Set all small values to zero
+    A[np.abs(A) < eps] = 0
     return A
